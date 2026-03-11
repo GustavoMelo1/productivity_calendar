@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>calendario gustavo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            transform-origin: top left;
+        }
+
+        body {
+            background-color: #0d0d0d;
+            background-image: linear-gradient(rgba(20, 20, 20, 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(20, 20, 20, 0.5) 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: #d4d4d4;
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            transform: scale(1);
+        }
+
+        h2,
+        h3,
+        th,
+        .num-dia,
+        .titulo-linha,
+        .numero-grande {
+            font-family: 'Lilita One', cursive;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+
+        .caixote {
+            background-color: #121212;
+            border: 1px solid #262626;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .caixote::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            border-top: 2px solid #262626;
+            border-right: 2px solid #262626;
+            pointer-events: none;
+        }
+
+        .caixote::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 10px;
+            height: 10px;
+            border-bottom: 2px solid #262626;
+            border-left: 2px solid #262626;
+            pointer-events: none;
+        }
+
+        .topo-caixote {
+            padding: 8px 12px;
+            border-bottom: 1px solid #262626;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topo-caixote h2 {
+            font-size: 11px;
+            color: #d4d4d4;
+            text-transform: uppercase;
+        }
+
+        .aviso-topo {
+            font-size: 9px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .miolo-caixote {
+            padding: 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .painel-lateral {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            font-size: 9px;
+            max-width: 380px;
+        }
+
+        #relogio-vivo {
+            font-size: 22px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 2px;
+        }
+
+        #nome-sistema {
+            font-size: 9px;
+            color: #666;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .lista-metas {
+            list-style: none;
+        }
+
+        .lista-metas li {
+            margin-bottom: 6px;
+            color: #666;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            font-size: 9px;
+        }
+
+        .lista-metas li:hover {
+            color: #d4d4d4;
+        }
+
+        .lista-metas li.amassado {
+            color: #5A8D5C;
+            font-weight: bold;
+        }
+
+        .marcador {
+            display: inline-block;
+            width: 18px;
+            font-family: 'Lilita One', cursive;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .lista-metas li.amassado .marcador {
+            color: #5A8D5C;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 4px;
+            table-layout: fixed;
+        }
+
+        th,
+        td {
+            border: 1px solid #262626;
+            padding: 4px 2px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 7.5px;
+        }
+
+        th {
+            color: #666;
+            font-size: 9px;
+        }
+
+        .titulo-linha {
+            text-align: left;
+            padding-left: 4px;
+            color: #666;
+            font-size: 9px;
+        }
+
+        .grade-estudos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .coluna-materia h3 {
+            font-size: 10px;
+            color: #666;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #262626;
+            padding-bottom: 3px;
+            font-weight: normal;
+        }
+
+        .coluna-materia ul {
+            list-style: none;
+            color: #666;
+            font-size: 8px;
+        }
+
+        .coluna-materia li {
+            margin-bottom: 5px;
+            cursor: pointer;
+            user-select: none;
+            transition: 0.2s;
+            padding-left: 4px;
+            border-left: 2px solid transparent;
+        }
+
+        .coluna-materia li:hover {
+            border-left-color: #666;
+            color: #d4d4d4;
+        }
+
+        .coluna-materia li.amassado {
+            text-decoration: line-through;
+            color: #2a2a2a;
+            border-left-color: #2a2a2a;
+        }
+
+        .area-matriz {
+            flex: 2.5;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .linha-metricas {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .bloco-metrica {
+            background: #121212;
+            border: 1px solid #262626;
+            padding: 10px 12px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .bloco-metrica::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #262626;
+        }
+
+        .bloco-metrica.destaque-hoje::after {
+            background: #d4d4d4;
+        }
+
+        .titulo-metrica {
+            font-size: 8px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+
+        .numero-grande {
+            font-size: 24px;
+            color: #d4d4d4;
+            line-height: 1;
+            margin-bottom: 3px;
+        }
+
+        .numero-grande.verde {
+            color: #ffffff;
+        }
+
+        .sub-texto {
+            font-size: 8px;
+            color: #666;
+        }
+
+        .dias-da-semana {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            padding: 12px 8px 0 8px;
+            text-align: center;
+            font-family: 'Lilita One', cursive;
+            font-size: 11px;
+            color: #666;
+            letter-spacing: 1px;
+        }
+
+        .matriz-calendario {
+            padding: 8px;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 6px;
+            flex: 1;
+        }
+
+        .bloco-dia {
+            background: #121212;
+            border: 1px solid #262626;
+            display: flex;
+            flex-direction: column;
+            transition: 0.2s;
+            overflow: hidden;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .bloco-dia:not(.buraco-vazio):hover {
+            border-color: #555;
+        }
+
+        .num-dia {
+            background: #111;
+            color: #888;
+            padding: 5px 8px;
+            font-size: 16px;
+            border-bottom: 1px solid #262626;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            transition: 0.2s;
+            z-index: 2;
+        }
+
+        .num-dia:hover {
+            color: #fff;
+            background: #222;
+        }
+
+        .texto-log {
+            flex: 1;
+            background: transparent;
+            color: #888;
+            border: none;
+            padding: 8px;
+            font-family: inherit;
+            font-size: 10px;
+            resize: none;
+            outline: none;
+            line-height: 1.5;
+            z-index: 2;
+        }
+
+        .texto-log::placeholder {
+            color: #333;
+        }
+
+        .bloco-dia.amassado {
+            border-color: #111;
+            background-color: #0a0a0a;
+        }
+
+        .bloco-dia.amassado .num-dia {
+            color: #333;
+            background-color: #0a0a0a;
+            border-bottom-color: #111;
+        }
+
+        .bloco-dia.amassado .texto-log {
+            color: #222;
+        }
+
+        .bloco-dia.amassado::after {
+            content: 'X';
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Lilita One', cursive;
+            font-size: 80px;
+            color: rgba(0, 0, 0, 0.7);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .bloco-dia.dia-atual {
+            border-color: #666;
+            background-color: #1a1a1a;
+        }
+
+        .bloco-dia.dia-atual .num-dia {
+            color: #ffffff;
+            background-color: #222;
+            border-bottom-color: #666;
+            font-weight: bold;
+        }
+
+        .bloco-dia.dia-atual .texto-log {
+            color: #d4d4d4;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="painel-lateral">
+        <h1 id="relogio-vivo">--:--:--</h1>
+        <div id="nome-sistema">GUSTAVO</div>
+        <div class="caixote">
+            <div class="topo-caixote">
+                <h2>OBJETIVOS DO ANO</h2>
+                <div class="aviso-topo"></div>
+            </div>
+            <div class="miolo-caixote">
+                <ul class="lista-metas" id="bloco-metas">
+                    <li id="meta-carreira"><span class="marcador">[ ]</span> Efetivação Júnior</li>
+                    <li id="meta-codigo"><span class="marcador">[ ]</span> App Fluxo de Caixa</li>
+                    <li id="meta-banco"><span class="marcador">[ ]</span> Upgrade Santander + Inv.</li>
+                    <li id="meta-shape"><span class="marcador">[ ]</span> Shape Foda (Treino A-E)</li>
+                    <li id="meta-estetica"><span class="marcador">[ ]</span> Guarda-roupa Tech</li>
+                    <li id="meta-setup"><span class="marcador">[ ]</span> TV + Xbox no Quarto</li>
+                    <li id="meta-idioma"><span class="marcador">[ ]</span> Inglês Fluente</li>
+                    <li id="meta-puc"><span class="marcador">[ ]</span> Transferência PUC (Eng)</li>
+                    <li id="meta-ufrgs"><span class="marcador">[ ]</span> UFRGS (Física/Estatística)</li>
+                </ul>
+            </div>
+        </div>
+        <div class="caixote">
+            <div class="topo-caixote">
+                <h2>ROTINA SEMANAL</h2>
+                <div class="aviso-topo"></div>
+            </div>
+            <div class="miolo-caixote" style="padding: 8px;">
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>SEG</th>
+                        <th>TER</th>
+                        <th>QUA</th>
+                        <th>QUI</th>
+                        <th>SEX</th>
+                        <th>SÁB</th>
+                        <th>DOM</th>
+                    </tr>
+                    <tr>
+                        <td class="titulo-linha">ESTUDOS</td>
+                        <td>PYTHON</td>
+                        <td>SQL</td>
+                        <td>PROJETO</td>
+                        <td>PROJETO</td>
+                        <td>PYTHON</td>
+                        <td>INVEST.</td>
+                        <td>OFF</td>
+                    </tr>
+                    <tr>
+                        <td class="titulo-linha">TREINO</td>
+                        <td>A-PUSH</td>
+                        <td>B-PULL</td>
+                        <td>C-LEGS</td>
+                        <td>DESC.</td>
+                        <td>A-PUSH</td>
+                        <td>B-PULL</td>
+                        <td>OFF</td>
+                    </tr>
+                    <tr>
+                        <td class="titulo-linha">CVs</td>
+                        <td>---</td>
+                        <td>X</td>
+                        <td>---</td>
+                        <td>---</td>
+                        <td>X</td>
+                        <td>---</td>
+                        <td>OFF</td>
+                    </tr>
+                    <tr>
+                        <td class="titulo-linha">LIVRO</td>
+                        <td>GOGGINS</td>
+                        <td>IKIGAI</td>
+                        <td>IKIGAI</td>
+                        <td>IKIGAI</td>
+                        <td>MAT.</td>
+                        <td>OFF</td>
+                        <td>OFF</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="caixote">
+            <div class="topo-caixote">
+                <h2>ESTUDOS</h2>
+                <div class="aviso-topo"></div>
+            </div>
+            <div class="miolo-caixote">
+                <div class="grade-estudos">
+                    <div class="coluna-materia">
+                        <h3>PYTHON</h3>
+                        <ul class="lista-estudos">
+                            <li id="py-comp">Comprehensions</li>
+                            <li id="py-oop">OOP (Dunder)</li>
+                            <li id="py-pandas">Pandas Avançado</li>
+                            <li id="py-etl">Scripts ETL</li>
+                        </ul>
+                    </div>
+                    <div class="coluna-materia">
+                        <h3>SQL</h3>
+                        <ul class="lista-estudos">
+                            <li id="sql-cte">CTEs (WITH AS)</li>
+                            <li id="sql-win">Window Funcs</li>
+                            <li id="sql-idx">Índices (Otimiz.)</li>
+                            <li id="sql-view">Views / Procs</li>
+                        </ul>
+                    </div>
+                    <div class="coluna-materia">
+                        <h3>FINANÇAS</h3>
+                        <ul class="lista-estudos">
+                            <li id="inv-juros">Juros Compostos</li>
+                            <li id="inv-renda">Renda Fixa/Var.</li>
+                            <li id="inv-fluxo">Fluxo de Caixa</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="area-matriz">
+        <div class="linha-metricas">
+            <div class="bloco-metrica">
+                <div class="titulo-metrica">MÊS ATUAL</div>
+                <div class="numero-grande" id="visor-mes">--</div>
+                <div class="sub-texto" id="visor-ano">----</div>
+            </div>
+            <div class="bloco-metrica destaque-hoje">
+                <div class="titulo-metrica">DIA ATUAL</div>
+                <div class="numero-grande verde" id="visor-dia">00</div>
+                <div class="sub-texto" id="visor-dia-semana">...</div>
+            </div>
+            <div class="bloco-metrica">
+                <div class="titulo-metrica">CUMPRIDAS</div>
+                <div class="numero-grande" id="visor-skills">0/11</div>
+                <div class="sub-texto">tópicos dominados</div>
+            </div>
+            <div class="bloco-metrica">
+                <div class="titulo-metrica">DIAS EXECUTADOS</div>
+                <div class="numero-grande" id="visor-dias-feitos">0</div>
+                <div class="sub-texto">de <span id="visor-total-dias">31</span> no mês</div>
+            </div>
+        </div>
+        <div class="caixote" style="flex: 1;">
+            <div class="topo-caixote">
+                <h2>EXECUÇÃO DIÁRIA</h2>
+            </div>
+            <div class="dias-da-semana">
+                <div>SEG</div>
+                <div>TER</div>
+                <div>QUA</div>
+                <div>QUI</div>
+                <div>SEX</div>
+                <div>SÁB</div>
+                <div>DOM</div>
+            </div>
+            <div class="matriz-calendario" id="grid-calendario"></div>
+        </div>
+    </div>
+    <script>
+        const loadDB = (key) => JSON.parse(localStorage.getItem(key)) || {};
+        const saveDB = (key, data) => localStorage.setItem(key, JSON.stringify(data));
+        let dt = new Date();
+        let m = dt.getMonth();
+        let y = dt.getFullYear();
+        let keyCal = `gusta_matriz_${m}_${y}`;
+        const state = {
+            metas: loadDB("gusta_metas_26"),
+            estudos: loadDB("gusta_estudos_26"),
+            calendario: loadDB(keyCal)
+        };
+
+        // Função para atualizar o relógio
+        const atualizaRelogio = () => {
+            const agora = new Date();
+            const horas = String(agora.getHours()).padStart(2, '0');
+            const minutos = String(agora.getMinutes()).padStart(2, '0');
+            const segundos = String(agora.getSeconds()).padStart(2, '0');
+            document.getElementById("relogio-vivo").innerText = `${horas}:${minutos}:${segundos}`;
+        };
+
+        // Atualiza imediatamente
+        atualizaRelogio();
+
+        // E continua atualizando a cada segundo
+        setInterval(atualizaRelogio, 1000);
+        let nMeses = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
+        let nDias = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+        document.getElementById("visor-mes").innerText = nMeses[m];
+        document.getElementById("visor-ano").innerText = y;
+        document.getElementById("visor-dia").innerText = dt.getDate();
+        document.getElementById("visor-dia-semana").innerText = nDias[dt.getDay()];
+        document.querySelectorAll(".lista-metas li").forEach(li => {
+            let box = li.querySelector(".marcador");
+            if (state.metas[li.id]) {
+                li.classList.add("amassado");
+                box.innerText = "[X]";
+            }
+            li.addEventListener("dblclick", () => {
+                li.classList.toggle("amassado");
+                let isDone = li.classList.contains("amassado");
+                box.innerText = isDone ? "[X]" : "[ ]";
+                state.metas[li.id] = isDone;
+                saveDB("gusta_metas_26", state.metas);
+            });
+        });
+        const refreshSkills = () => {
+            let pts = document.querySelectorAll(".lista-estudos li.amassado").length;
+            document.getElementById("visor-skills").innerText = `${pts}/11`;
+        };
+        document.querySelectorAll(".lista-estudos li").forEach(li => {
+            if (state.estudos[li.id]) li.classList.add("amassado");
+            li.addEventListener("dblclick", () => {
+                li.classList.toggle("amassado");
+                state.estudos[li.id] = li.classList.contains("amassado");
+                saveDB("gusta_estudos_26", state.estudos);
+                refreshSkills();
+            });
+        });
+        refreshSkills();
+        class MotorCalendario {
+            constructor(mes, ano) {
+                this.mes = mes;
+                this.ano = ano;
+            }
+            totalDias() {
+                return new Date(this.ano, this.mes + 1, 0).getDate();
+            }
+            vaziosIniciais() {
+                let d = new Date(this.ano, this.mes, 1).getDay();
+                return d === 0 ? 6 : d - 1;
+            }
+        }
+        const cal = new MotorCalendario(m, y);
+        const grade = document.getElementById("grid-calendario");
+        const atualizaPlacar = () => {
+            let feitos = Object.values(state.calendario).filter(d => d.amassado).length;
+            document.getElementById("visor-dias-feitos").innerText = feitos;
+        };
+        document.getElementById("visor-total-dias").innerText = cal.totalDias();
+        for (let k = 0; k < cal.vaziosIniciais(); k++) {
+            let div = document.createElement("div");
+            div.className = "bloco-dia buraco-vazio";
+            div.style.visibility = "hidden";
+            grade.appendChild(div);
+        }
+        for (let d = 1; d <= cal.totalDias(); d++) {
+            let info = state.calendario[d] || { texto: "", amassado: false };
+            let strNum = d < 10 ? `0${d}` : d;
+            let divDia = document.createElement("div");
+            divDia.className = info.amassado ? "bloco-dia amassado" : "bloco-dia";
+            if (d === dt.getDate()) divDia.classList.add("dia-atual");
+            let topo = document.createElement("div");
+            topo.className = "num-dia";
+            topo.innerText = strNum;
+            let txt = document.createElement("textarea");
+            txt.className = "texto-log";
+            txt.value = info.texto;
+            txt.placeholder = "Log...";
+            topo.addEventListener("dblclick", () => {
+                info.amassado = !info.amassado;
+                state.calendario[d] = info;
+                saveDB(keyCal, state.calendario);
+                divDia.classList.toggle("amassado");
+                atualizaPlacar();
+            });
+            txt.addEventListener("input", (e) => {
+                info.texto = e.target.value;
+                state.calendario[d] = info;
+                saveDB(keyCal, state.calendario);
+            });
+            divDia.appendChild(topo);
+            divDia.appendChild(txt);
+            grade.appendChild(divDia);
+        }
+        atualizaPlacar();
+    </script>
+</body>
+
+</html>
