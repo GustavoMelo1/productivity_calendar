@@ -1,0 +1,29 @@
+{
+	"contentrating": "Everyone",
+	"description": "Calendário interativo de produtividade Gustavo",
+	"file": "index.html",
+	"general": {
+		"properties": {
+			"schemecolor": {
+				"order": 0,
+				"text": "ui_browse_properties_scheme_color",
+				"type": "color",
+				"value": "0 0 0"
+			}
+		}
+	},
+	"preview": "preview.jpg",
+	"tags": [
+		"Web",
+		"Productivity",
+		"Calendar"
+	],
+	"title": "Calendário Gustavo",
+	"type": "web",
+	"version": 1,
+	"visibility": "private",
+	"workshopid": "0",
+	"workshopurl": "",
+	"supportsaudioprocessing": false,
+	"supportsinteraction": true
+}
