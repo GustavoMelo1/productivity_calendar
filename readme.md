@@ -4,3 +4,4 @@ Projeto relampago para resolver um problema pessoal de organização. Eu precisa
 
 O sistema não tem servidor, guarda tudo diretamente no LocalStorage do browser e roda na minha area de trabalho (Wallpaper Engine). 
 
+
